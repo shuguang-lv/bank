@@ -1,13 +1,24 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
+import prisma from "@/lib/prisma";
 
 type Data = {
-  name: string
+  connect: boolean
 }
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  res.status(200).json({ name: 'John Doe' })
+  const EMAIL = "siyaoh4@uci.edu";
+  const exists = await prisma.bANK_USERS.findUnique({
+    where: {
+      EMAIL,
+    },
+  });
+  if (exists){
+    res.status(200).json({ connect : true })
+  }else{
+    res.status(401).json({ connect : false })
+  }
+  
 }
