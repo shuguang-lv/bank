@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prisma:generate": "dotenv -e .env.local npx prisma generate",
+    "prisma:push": "dotenv -e .env.local npx prisma db push",
+    "prisma:studio": "dotenv -e .env.local npx prisma studio"
   },
   "dependencies": {
     "@prisma/client": "4.13.0",
