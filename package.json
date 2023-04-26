@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@prisma/client": "4.13.0",
     "@types/node": "18.15.13",
     "@types/react": "18.0.37",
     "@types/react-dom": "18.0.11",
@@ -23,6 +24,7 @@
     "typescript": "5.0.4"
   },
   "devDependencies": {
-    "eslint-config-prettier": "^8.8.0"
+    "eslint-config-prettier": "^8.8.0",
+    "prisma": "4.13.0"
   }
 }
