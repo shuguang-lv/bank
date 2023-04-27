@@ -10,9 +10,9 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   const EMAIL = "siyaoh4@uci.edu";
-  const exists = await prisma.bANK_USERS.findUnique({
+  const exists = await prisma.bANK_USERS.findFirst({
     where: {
-      EMAIL,
+      EMAIL
     },
   });
   if (exists){
