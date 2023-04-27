@@ -7,6 +7,7 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
+    "prettier:lint": "npx prettier --write .",
     "prisma:generate": "dotenv -e .env.local npx prisma generate",
     "prisma:push": "dotenv -e .env.local npx prisma db push",
     "prisma:studio": "dotenv -e .env.local npx prisma studio"

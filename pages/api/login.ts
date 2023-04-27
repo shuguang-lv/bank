@@ -1,20 +1,20 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from "bcrypt";
 import jwt from "@/lib/jwt";
 
 type Data = {
-  userId: string,
-  email: string,
-  token: string
-}
+  userId: string;
+  email: string;
+  token: string;
+};
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
   return new Promise<void>(async (resolve, reject) => {
-    if (req.method !== 'POST' || !req.body.email || !req.body.password) {
+    if (req.method !== "POST" || !req.body.email || !req.body.password) {
       res.status(400).end();
       resolve();
     } else {
@@ -23,23 +23,32 @@ export default async function handler(
       // console.log(uuidv4());
       const exists = await prisma.bANK_USERS.findFirst({
         where: {
-          EMAIL
+          EMAIL,
         },
       });
       if (!exists) {
         res.status(403).end();
         resolve();
       } else {
-        bcrypt.compare(req.body.password, exists.PWD_HASH, function (err, result) {
-          if (result) {
-            let token = jwt.sign({ userId: exists.USER_ID, email: EMAIL }, { expiresIn: '1h' });
-            res.status(200).json({ email: EMAIL, userId: exists.USER_ID, token: token })
-            resolve();
-          } else {
-            res.status(403).end();
-            resolve();
+        bcrypt.compare(
+          req.body.password,
+          exists.PWD_HASH,
+          function (err, result) {
+            if (result) {
+              let token = jwt.sign(
+                { userId: exists.USER_ID, email: EMAIL },
+                { expiresIn: "1h" }
+              );
+              res
+                .status(200)
+                .json({ email: EMAIL, userId: exists.USER_ID, token: token });
+              resolve();
+            } else {
+              res.status(403).end();
+              resolve();
+            }
           }
-        });
+        );
       }
     }
   });
