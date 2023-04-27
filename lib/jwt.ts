@@ -22,7 +22,7 @@ const jwt = {
             res.status(401).end();
             return;
         }
-        jsonwebtoken.verify(token, secret, (err: any, decoded: any) => {
+        jsonwebtoken.verify(token, secret, (err: any, decoded: {userId: string, email: string}) => {
             if (err) {
                 res.status(403).end();
                 return;
