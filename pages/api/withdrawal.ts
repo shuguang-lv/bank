@@ -1,10 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from "@/lib/prisma";
-import {  Prisma } from '@prisma/client'
+import { Prisma } from '@prisma/client'
+import * as bcrypt from 'bcrypt';
 import jwt from "@/lib/jwt";
 
 type Data = {
-    balance : Prisma.Decimal
+    balance: Prisma.Decimal
 }
 
 export default async function handler(
@@ -21,7 +22,17 @@ export default async function handler(
             if (!exists) {
                 res.status(403).end();
             } else {
-                res.status(200).json({ balance: exists.BALANCE })
+                if (!req.body.amount) {
+                    res.status(400).end();
+                } else {
+                    let newBalance = Number(exists.BALANCE) - Number(req.body.amount);
+                    if (newBalance < 0) {
+                        res.status(422).end();
+                    }else{
+                        await prisma.bANK_USERS.update({ where: { USER_ID: decoded.userId }, data: { BALANCE: newBalance } });
+                        res.status(200).json({ balance: newBalance })
+                    }
+                }
             }
             resolve();
         });
