@@ -1,12 +1,13 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
-import * as bcrypt from "bcrypt";
-import jwt from "@/lib/jwt";
+import type { NextApiRequest, NextApiResponse } from "next"
+import { Prisma } from "@prisma/client"
+import * as bcrypt from "bcrypt"
+
+import jwt from "@/lib/jwt"
+import prisma from "@/lib/prisma"
 
 type Data = {
-  balance: Prisma.Decimal;
-};
+  balance: Prisma.Decimal
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -21,16 +22,16 @@ export default async function handler(
           where: {
             USER_ID: decoded.userId,
           },
-        });
+        })
         if (!exists) {
-          res.status(403).end();
-          resolve();
+          res.status(403).end()
+          resolve()
         } else {
-          res.status(200).json({ balance: exists.BALANCE });
-          resolve();
+          res.status(200).json({ balance: exists.BALANCE })
+          resolve()
         }
-        resolve();
+        resolve()
       }
-    );
-  });
+    )
+  })
 }
