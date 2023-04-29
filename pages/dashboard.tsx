@@ -1,5 +1,8 @@
+import { useEffect } from "react"
 import Head from "next/head"
 import { useRouter } from "next/router"
+import { useToast } from "@/hooks/ui/use-toast"
+import { useLocalStorageState } from "ahooks"
 import { CreditCard, Landmark, LogOut } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -16,6 +19,33 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function DashboardPage() {
   const router = useRouter()
+  const [userToken, setUserToken] = useLocalStorageState<string | undefined>(
+    "user-token"
+  )
+  const [userEmail, setUserEmail] = useLocalStorageState<string | undefined>(
+    "user-email"
+  )
+  const { toast } = useToast()
+
+  useEffect(() => {
+    if (!userToken) {
+      router.push("/auth")
+      setTimeout(
+        () =>
+          toast({
+            variant: "destructive",
+            title: "User token is invalid! Please login",
+          }),
+        0
+      )
+    }
+  }, [userToken])
+
+  const logout = () => {
+    setUserToken(undefined)
+    setUserEmail(undefined)
+    router.push("/auth")
+  }
 
   return (
     <div className="w-full h-full flex flex-col items-center">
@@ -32,17 +62,20 @@ export default function DashboardPage() {
         <div className="flex items-center mr-2">
           <Avatar className="mr-4">
             <AvatarImage
-              src="https://api.dicebear.com/6.x/notionists-neutral/svg?seed="
+              src={
+                "https://api.dicebear.com/6.x/notionists-neutral/svg?seed=" +
+                userEmail
+              }
               alt="avatar"
             />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="ghost">shuguang-lv@outlook.com</Button>
+              <Button variant="ghost">{userEmail}</Button>
             </PopoverTrigger>
             <PopoverContent className="w-50 p-0">
-              <Button variant="outline" onClick={() => router.push("/auth")}>
+              <Button variant="outline" onClick={logout}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Log out
               </Button>

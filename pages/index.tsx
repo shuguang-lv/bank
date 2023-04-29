@@ -1,13 +1,11 @@
 import { useEffect } from "react"
 import { useRouter } from "next/router"
-import { useSessionStorageState } from "ahooks"
+import { useLocalStorageState } from "ahooks"
 import { Landmark } from "lucide-react"
 
 export default function DefaultPage() {
   const router = useRouter()
-  const [userToken, _] = useSessionStorageState<string | undefined>(
-    "user_token"
-  )
+  const [userToken, _] = useLocalStorageState<string | undefined>("user-token")
 
   useEffect(() => {
     if (!userToken) {
