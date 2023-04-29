@@ -24,10 +24,10 @@ export default function AuthPage() {
         <title>Bank - Authentication</title>
       </Head>
       <div className="flex items-center mb-16">
-        <Landmark size={80} className="mr-4" />
+        <Landmark size={80} className="mr-6" />
         <h1>Bank</h1>
       </div>
-      <Tabs value={tab} className="w-[400px] mb-[150px]">
+      <Tabs value={tab} className="w-[400px]">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="login" onClick={() => setTab("login")}>
             Log in
