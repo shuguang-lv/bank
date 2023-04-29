@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/ui/use-toast"
 import { useLocalStorageState } from "ahooks"
 import { Landmark, Loader2 } from "lucide-react"
 
+import { validateBalance, validateEmail, validatePassword } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -12,8 +13,8 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const EMAIL_REGX = /^[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/i
-const PWD_REGX =
-  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+=[{\]};:'\"|,.<>/?\\-]).{8,}$/
+const PWD_REGX = /^[a-z0-9_.-]+$/
+const NUMBER_REGX = /^[1-9]\d*(\.\d{2})?$/
 
 function LoginCard() {
   const router = useRouter()
@@ -94,11 +95,10 @@ function SignupCard() {
   const { toast } = useToast()
 
   const validateFields = () =>
-    EMAIL_REGX.test(email.trim()) &&
-    PWD_REGX.test(password) &&
+    validateEmail(email) &&
+    validatePassword(password) &&
     password === password2 &&
-    typeof balance === "number" &&
-    balance >= 0
+    validateBalance(balance)
 
   const signup = async () => {
     setLoading(true)
@@ -136,7 +136,7 @@ function SignupCard() {
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-        {!EMAIL_REGX.test(email.trim()) && (
+        {!validateEmail(email) && (
           <div
             role="alert"
             className="rounded border-s-4 border-red-500 bg-red-50 p-2"
@@ -156,25 +156,16 @@ function SignupCard() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        {!PWD_REGX.test(password) && (
+        {!validatePassword(password) && (
           <div
             role="alert"
             className="rounded border-s-4 border-red-500 bg-red-50 p-2"
           >
             <strong className="block font-medium text-sm text-red-800">
               {" "}
-              Make sure your password meets the following criteria:
-              <br />
-              - Are at least 8 characters long
-              <br />
-              - Have at least one digit
-              <br />
-              - Have at least one lowercase letter
-              <br />
-              - Have at least one uppercase letter
-              <br />
-              - Have at least one special character
-              <br />{" "}
+              Make sure your password only includes underscores, hyphens, dots,
+              digits, or lowercase alphabetical characters. The length range of
+              it should be [1, 127]{" "}
             </strong>
           </div>
         )}
@@ -207,14 +198,16 @@ function SignupCard() {
             onChange={(e) => setBalance(Number(e.target.value))}
           />
         </div>
-        {!(typeof balance === "number" && balance >= 0) && (
+        {!validateBalance(balance) && (
           <div
             role="alert"
             className="rounded border-s-4 border-red-500 bg-red-50 p-2"
           >
             <strong className="block font-medium text-sm text-red-800">
               {" "}
-              The value of initial balance should be a non-negative integer{" "}
+              The value of initial balance should be positive without leading 0
+              with 2-digit fractional part. The range of it is [0.00,
+              4294967295.99]{" "}
             </strong>
           </div>
         )}
