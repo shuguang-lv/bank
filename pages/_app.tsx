@@ -13,7 +13,7 @@ const nunito = Nunito_Sans({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <main
-      className={`${nunito.className} ${nunito.variable} flex h-screen w-screen flex-col items-center justify-center font-sans text-slate-900 antialiased`}
+      className={`${nunito.className} ${nunito.variable} flex h-screen w-screen flex-col items-center justify-center font-sans text-slate-900 antialiased pb-[150px]`}
     >
       <Component {...pageProps} />
       <div className="w-full fixed bottom-0 p-8">
