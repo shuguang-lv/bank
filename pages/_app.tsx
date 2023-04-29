@@ -3,6 +3,7 @@ import type { AppProps } from "next/app"
 import { Nunito_Sans } from "next/font/google"
 
 import { Separator } from "@/components/ui/separator"
+import { Toaster } from "@/components/ui/toaster"
 
 const nunito = Nunito_Sans({
   subsets: ["latin"],
@@ -13,9 +14,10 @@ const nunito = Nunito_Sans({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <main
-      className={`${nunito.className} ${nunito.variable} flex h-screen w-screen flex-col items-center justify-center font-sans text-slate-900 antialiased pb-[150px]`}
+      className={`${nunito.className} ${nunito.variable} flex h-screen w-screen flex-col items-center justify-center font-sans text-slate-900 antialiased pb-[100px]`}
     >
       <Component {...pageProps} />
+      <Toaster />
       <div className="w-full fixed bottom-0 p-8">
         <Separator className="mb-4" />
         <div className="flex justify-between p-2">
