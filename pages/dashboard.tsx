@@ -1,10 +1,11 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import Head from "next/head"
 import { useRouter } from "next/router"
 import { useToast } from "@/hooks/ui/use-toast"
 import { useLocalStorageState } from "ahooks"
-import { CreditCard, Landmark, LogOut } from "lucide-react"
+import { CreditCard, Landmark, Loader2, LogOut } from "lucide-react"
 
+import { validateBalance } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -17,15 +18,181 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
+function AmountAlert() {
+  return (
+    <div
+      role="alert"
+      className="rounded border-s-4 border-red-500 bg-red-50 p-2"
+    >
+      <strong className="block font-medium text-sm text-red-800">
+        {" "}
+        The amount should be positive without leading 0 with 2-digit fractional
+        part. The range of it is [0.00, 4294967295.99]{" "}
+      </strong>
+    </div>
+  )
+}
+
+function DepositCard({
+  userToken,
+  setBalance,
+}: {
+  userToken: string | undefined
+  setBalance: (balance: number) => void
+}) {
+  const [amount, setAmount] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const { toast } = useToast()
+
+  const deposit = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch("/api/deposit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+          Authorization: `Bearer ${userToken}`,
+        },
+        body: JSON.stringify({ amount }),
+      })
+      if (res.ok) {
+        const json = await res.json()
+        setBalance(json.balance ?? 0)
+        toast({
+          title: "Deposit successfully!",
+        })
+      } else {
+        toast({
+          variant: "destructive",
+          title: res.statusText,
+        })
+      }
+    } catch (error) {}
+    setLoading(false)
+  }
+
+  return (
+    <Card className="pt-8">
+      <CardContent className="w-full max-w-sm space-x-2">
+        <div className="flex justify-between mb-4">
+          <Input
+            id="deposit"
+            type="number"
+            placeholder="Amount"
+            value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+          />
+          <Button
+            className="ml-2"
+            disabled={loading || !validateBalance(amount)}
+            onClick={deposit}
+          >
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Submit
+          </Button>
+        </div>
+        {!validateBalance(amount) && <AmountAlert />}
+      </CardContent>
+    </Card>
+  )
+}
+
+function WithdrawCard({
+  userToken,
+  setBalance,
+}: {
+  userToken: string | undefined
+  setBalance: (balance: number) => void
+}) {
+  const [amount, setAmount] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const { toast } = useToast()
+
+  const withdraw = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch("/api/withdrawal", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+          Authorization: `Bearer ${userToken}`,
+        },
+        body: JSON.stringify({ amount }),
+      })
+      if (res.ok) {
+        const json = await res.json()
+        setBalance(json.balance ?? 0)
+        toast({
+          title: "Withdraw successfully!",
+        })
+      } else {
+        toast({
+          variant: "destructive",
+          title: res.statusText,
+        })
+      }
+    } catch (error) {}
+    setLoading(false)
+  }
+
+  return (
+    <Card className="pt-8">
+      <CardContent className="w-full max-w-sm space-x-2">
+        <div className="flex justify-between mb-4">
+          <Input
+            id="withdraw"
+            type="number"
+            placeholder="Amount"
+            value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+          />
+          <Button
+            className="ml-2"
+            disabled={loading || !validateBalance(amount)}
+            onClick={withdraw}
+          >
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Submit
+          </Button>
+        </div>
+        {!validateBalance(amount) && <AmountAlert />}
+      </CardContent>
+    </Card>
+  )
+}
+
 export default function DashboardPage() {
   const router = useRouter()
+  const { toast } = useToast()
   const [userToken, setUserToken] = useLocalStorageState<string | undefined>(
     "user-token"
   )
   const [userEmail, setUserEmail] = useLocalStorageState<string | undefined>(
     "user-email"
   )
-  const { toast } = useToast()
+  const [email, setEmail] = useState("")
+  const [balance, setBalance] = useState(0)
+
+  const getBalance = async () => {
+    try {
+      const res = await fetch("/api/balance", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+          Authorization: `Bearer ${userToken}`,
+        },
+      })
+      if (res.ok) {
+        const json = await res.json()
+        setBalance(json.balance ?? 0)
+      } else {
+        toast({
+          variant: "destructive",
+          title: res.statusText,
+        })
+      }
+    } catch (error) {}
+  }
 
   useEffect(() => {
     if (!userToken) {
@@ -39,6 +206,8 @@ export default function DashboardPage() {
         0
       )
     }
+    setEmail(() => userEmail ?? "")
+    getBalance()
   }, [userToken])
 
   const logout = () => {
@@ -72,7 +241,7 @@ export default function DashboardPage() {
           </Avatar>
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="ghost">{userEmail}</Button>
+              <Button variant="ghost">{email}</Button>
             </PopoverTrigger>
             <PopoverContent className="w-50 p-0">
               <Button variant="outline" onClick={logout}>
@@ -89,37 +258,22 @@ export default function DashboardPage() {
           <CreditCard className="h-5 w-5 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold mb-8">12,234</div>
+          <div className="text-3xl font-bold mb-8">
+            {Number(balance).toLocaleString("en-US", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </div>
           <Tabs defaultValue="deposit" className="w-[400px]">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="deposit">Deposit</TabsTrigger>
               <TabsTrigger value="withdraw">Withdraw</TabsTrigger>
             </TabsList>
             <TabsContent value="deposit">
-              <Card className="pt-8">
-                <CardContent className="flex w-full max-w-sm items-center space-x-2">
-                  <Input
-                    id="deposit"
-                    type="number"
-                    defaultValue="0"
-                    placeholder="Amount"
-                  />
-                  <Button>Submit</Button>
-                </CardContent>
-              </Card>
+              <DepositCard userToken={userToken} setBalance={setBalance} />
             </TabsContent>
             <TabsContent value="withdraw">
-              <Card className="pt-8">
-                <CardContent className="flex w-full max-w-sm items-center space-x-2">
-                  <Input
-                    id="withdraw"
-                    type="number"
-                    defaultValue="0"
-                    placeholder="Amount"
-                  />
-                  <Button>Submit</Button>
-                </CardContent>
-              </Card>
+              <WithdrawCard userToken={userToken} setBalance={setBalance} />
             </TabsContent>
           </Tabs>
         </CardContent>

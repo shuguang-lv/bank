@@ -37,8 +37,8 @@ function LoginCard() {
       })
       if (res.ok) {
         const json = await res.json()
-        setUserEmail(json.email)
-        setUserToken(json.token)
+        setUserEmail(json.email ?? "")
+        setUserToken(json.token ?? "")
         router.push("/dashboard")
       } else {
         toast({
