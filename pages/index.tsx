@@ -10,6 +10,8 @@ export default function DefaultPage() {
   useEffect(() => {
     if (!userToken) {
       router.push("/auth")
+    } else {
+      router.push("/dashboard")
     }
   }, [userToken])
 
