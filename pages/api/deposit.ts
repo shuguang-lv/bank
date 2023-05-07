@@ -20,7 +20,7 @@ export default async function handler(
       async (req: NextApiRequest, res: NextApiResponse, decoded: any) => {
         const exists = await prisma.bANK_USERS.findFirst({
           where: {
-            USER_NAME: decoded.username
+            USER_NAME: decoded.username,
           },
         })
         if (!exists) {
