@@ -1,12 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next"
-import * as bcrypt from "bcrypt"
+import * as argon2 from "argon2"
 
 import jwt from "@/lib/jwt"
 import prisma from "@/lib/prisma"
 
 type Data = {
-  userId: string
-  email: string
+  username: string
   token: string
 }
 
@@ -15,41 +14,30 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   return new Promise<void>(async (resolve, reject) => {
-    if (req.method !== "POST" || !req.body.email || !req.body.password) {
+    if (req.method !== "POST" || !req.body.username || !req.body.password) {
       res.status(400).end()
       resolve()
     } else {
-      const EMAIL = req.body.email
-      // bcrypt.hash(req.body.password,10,(err,hash)=>{console.log(hash);});
-      // console.log(uuidv4());
+      const username = req.body.username
       const exists = await prisma.bANK_USERS.findFirst({
         where: {
-          EMAIL,
+          USER_NAME: username,
         },
       })
       if (!exists) {
         res.status(403).end()
         resolve()
       } else {
-        bcrypt.compare(
-          req.body.password,
-          exists.PWD_HASH,
-          function (err, result) {
-            if (result) {
-              let token = jwt.sign(
-                { userId: exists.USER_ID, email: EMAIL },
-                { expiresIn: "1h" }
-              )
-              res
-                .status(200)
-                .json({ email: EMAIL, userId: exists.USER_ID, token: token })
-              resolve()
-            } else {
-              res.status(403).end()
-              resolve()
-            }
+        argon2.verify(exists.PWD_HASH, req.body.password).then((result) => {
+          if (result) {
+            let token = jwt.sign({ username: username }, { expiresIn: "1h" })
+            res.status(200).json({ username: username, token: token })
+            resolve()
+          } else {
+            res.status(403).end()
+            resolve()
           }
-        )
+        })
       }
     }
   })

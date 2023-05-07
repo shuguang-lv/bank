@@ -20,7 +20,7 @@ export default async function handler(
       async (req: NextApiRequest, res: NextApiResponse, decoded: any) => {
         const exists = await prisma.bANK_USERS.findFirst({
           where: {
-            USER_ID: decoded.userId,
+            USER_NAME: decoded.username
           },
         })
         if (!exists) {
@@ -31,7 +31,7 @@ export default async function handler(
           } else {
             let newBalance = Number(exists.BALANCE) + Number(req.body.amount)
             await prisma.bANK_USERS.update({
-              where: { USER_ID: decoded.userId },
+              where: { USER_NAME: decoded.username },
               data: { BALANCE: newBalance },
             })
             res.status(200).json({ balance: newBalance })

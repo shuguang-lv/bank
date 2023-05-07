@@ -8,8 +8,7 @@ datasource db {
 }
 
 model BANK_USERS {
-  EMAIL    String  @db.VarChar(72)
-  PWD_HASH String  @db.VarChar(72)
-  BALANCE  Decimal @db.Decimal(10, 0)
-  USER_ID  String  @id @db.VarChar(36)
+  PWD_HASH  String  @db.VarChar(256)
+  BALANCE   Decimal @db.Decimal(14, 2)
+  USER_NAME String  @id @db.VarChar(128)
 }
