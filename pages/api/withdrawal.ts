@@ -29,41 +29,33 @@ export default async function handler(
           resolve()
           return
         }
-        const exists = await prisma.bANK_USERS.findFirst({
-          where: {
-            USER_NAME: decoded.username,
-          },
-        })
-        if (!exists) {
-          res.status(403).end()
-          resolve
-          return
-        }
-        let newBalance = Number(exists.BALANCE) - Number(req.body.amount)
-        if (newBalance < 0) {
-          res.status(422).end()
-          resolve()
-          return
-        }
-        await prisma.bANK_USERS.update({
-          where: { USER_NAME: decoded.username },
-          data: {
-            BALANCE: {
-              decrement: Number(req.body.amount), //TODO: the calculation from MySQL may be different from the calculation from JavaScript
+        try {
+          const newRecord = await prisma.bANK_USERS.update({
+            where: { USER_NAME: decoded.username },
+            data: {
+              BALANCE: {
+                decrement: Number(req.body.amount),
+              },
             },
-          },
-        })
-        let dbNewBalance = await prisma.bANK_USERS.findFirst({
-          where: { USER_NAME: decoded.username },
-        })
-        if (Number(dbNewBalance?.BALANCE) < 0) {
-          res.status(422).end()
-          resolve()
-          return
+          })
+          res.status(200).json({ balance: Number(newRecord.BALANCE) });
+          resolve();
+          return;
+        } catch (err) {
+          if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') {
+            // user not found
+            res.status(403).end()
+            resolve();
+            return;
+          } else if (err instanceof Prisma.PrismaClientUnknownRequestError && err.message.includes("code: 3819")) {
+            // negative balance
+            res.status(422).end()
+            resolve()
+            return;
+          } else {
+            throw err;
+          }
         }
-        res.status(200).json({ balance: Number(dbNewBalance?.BALANCE) })
-        resolve()
-        return
       }
     )
   })
