@@ -5,7 +5,13 @@ import { useToast } from "@/hooks/ui/use-toast"
 import { useLocalStorageState } from "ahooks"
 import { Landmark, Loader2 } from "lucide-react"
 
-import { validateBalance, validateEmail, validatePassword } from "@/lib/utils"
+import {
+  StatusCode,
+  handleErrorMsg,
+  validateBalance,
+  validateName,
+  validatePassword,
+} from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -14,15 +20,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 function LoginCard() {
   const router = useRouter()
-  const [email, setEmail] = useState("")
+  const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [userToken, setUserToken] = useLocalStorageState<string | undefined>(
     "user-token"
   )
-  const [userEmail, setUserEmail] = useLocalStorageState<string | undefined>(
-    "user-email"
-  )
+  const [userNameLocal, setUserNameLocal] = useLocalStorageState<
+    string | undefined
+  >("user-name")
   const { toast } = useToast()
 
   const login = async () => {
@@ -33,17 +39,17 @@ function LoginCard() {
         headers: {
           "Content-Type": "application/json;charset=utf-8",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, password }),
       })
       if (res.ok) {
         const json = await res.json()
-        setUserEmail(json.email ?? "")
         setUserToken(json.token ?? "")
+        setUserNameLocal(json.username ?? "")
         router.push("/dashboard")
       } else {
         toast({
           variant: "destructive",
-          title: res.statusText,
+          title: handleErrorMsg(res.status as StatusCode),
         })
       }
     } catch (error) {}
@@ -54,12 +60,11 @@ function LoginCard() {
     <Card className="pt-8">
       <CardContent className="space-y-2">
         <div className="space-y-1">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="username">Username</Label>
           <Input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </div>
         <div className="space-y-1">
@@ -73,7 +78,10 @@ function LoginCard() {
         </div>
       </CardContent>
       <CardFooter className="flex justify-center">
-        <Button disabled={loading || email.trim().length === 0} onClick={login}>
+        <Button
+          disabled={loading || username.trim().length === 0}
+          onClick={login}
+        >
           {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Submit
         </Button>
@@ -83,7 +91,7 @@ function LoginCard() {
 }
 
 function SignupCard() {
-  const [email, setEmail] = useState("")
+  const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [password2, setPassword2] = useState("")
   const [balance, setBalance] = useState(0)
@@ -91,7 +99,7 @@ function SignupCard() {
   const { toast } = useToast()
 
   const validateFields = () =>
-    validateEmail(email) &&
+    validateName(username) &&
     validatePassword(password) &&
     password === password2 &&
     validateBalance(balance)
@@ -104,7 +112,7 @@ function SignupCard() {
         headers: {
           "Content-Type": "application/json;charset=utf-8",
         },
-        body: JSON.stringify({ email, password, balance }),
+        body: JSON.stringify({ username, password, balance }),
       })
       if (res.ok) {
         toast({
@@ -113,7 +121,7 @@ function SignupCard() {
       } else {
         toast({
           variant: "destructive",
-          title: res.statusText,
+          title: handleErrorMsg(res.status as StatusCode),
         })
       }
     } catch (error) {}
@@ -124,22 +132,23 @@ function SignupCard() {
     <Card className="pt-8">
       <CardContent className="space-y-2">
         <div className="space-y-1">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="username">Username</Label>
           <Input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </div>
-        {!validateEmail(email) && (
+        {!validateName(username) && (
           <div
             role="alert"
             className="rounded border-s-4 border-red-500 bg-red-50 p-2"
           >
             <strong className="block font-medium text-sm text-red-800">
               {" "}
-              Email format is wrong{" "}
+              Make sure your username only includes underscores, hyphens, dots,
+              digits, or lowercase alphabetical characters. The length range of
+              it should be [1, 127]{" "}
             </strong>
           </div>
         )}

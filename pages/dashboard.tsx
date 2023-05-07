@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/ui/use-toast"
 import { useLocalStorageState } from "ahooks"
 import { CreditCard, Landmark, Loader2, LogOut } from "lucide-react"
 
-import { validateBalance } from "@/lib/utils"
+import { StatusCode, handleErrorMsg, validateBalance } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -64,7 +64,7 @@ function DepositCard({
       } else {
         toast({
           variant: "destructive",
-          title: res.statusText,
+          title: handleErrorMsg(res.status as StatusCode),
         })
       }
     } catch (error) {}
@@ -128,7 +128,7 @@ function WithdrawCard({
       } else {
         toast({
           variant: "destructive",
-          title: res.statusText,
+          title: handleErrorMsg(res.status as StatusCode),
         })
       }
     } catch (error) {}
@@ -167,10 +167,10 @@ export default function DashboardPage() {
   const [userToken, setUserToken] = useLocalStorageState<string | undefined>(
     "user-token"
   )
-  const [userEmail, setUserEmail] = useLocalStorageState<string | undefined>(
-    "user-email"
-  )
-  const [email, setEmail] = useState("")
+  const [userNameLocal, setUserNameLocal] = useLocalStorageState<
+    string | undefined
+  >("user-name")
+  const [username, setUsername] = useState("")
   const [balance, setBalance] = useState(0)
 
   const getBalance = async () => {
@@ -188,7 +188,7 @@ export default function DashboardPage() {
       } else {
         toast({
           variant: "destructive",
-          title: res.statusText,
+          title: handleErrorMsg(res.status as StatusCode),
         })
       }
     } catch (error) {}
@@ -206,13 +206,13 @@ export default function DashboardPage() {
         0
       )
     }
-    setEmail(() => userEmail ?? "")
+    setUsername(userNameLocal ?? "")
     getBalance()
   }, [userToken])
 
   const logout = () => {
     setUserToken(undefined)
-    setUserEmail(undefined)
+    setUserNameLocal(undefined)
     router.push("/auth")
   }
 
@@ -233,7 +233,7 @@ export default function DashboardPage() {
             <AvatarImage
               src={
                 "https://api.dicebear.com/6.x/notionists-neutral/svg?seed=" +
-                userEmail
+                username
               }
               alt="avatar"
             />
@@ -241,7 +241,7 @@ export default function DashboardPage() {
           </Avatar>
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="ghost">{email}</Button>
+              <Button variant="ghost">{username}</Button>
             </PopoverTrigger>
             <PopoverContent className="w-50 p-0">
               <Button variant="outline" onClick={logout}>

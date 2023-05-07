@@ -15,3 +15,20 @@ export const validateName = (username: string) => NAME_REGX.test(username)
 export const validatePassword = (password: string) => PWD_REGX.test(password)
 export const validateBalance = (balance: number) =>
   NUMBER_REGX.test(balance + "") && balance <= 4294967295.99
+
+export type StatusCode = 200 | 201 | 401 | 403 | 400 | 422 | 500
+
+export const handleErrorMsg = (statusCode: StatusCode) => {
+  switch (statusCode) {
+    case 401:
+      return "No credential provided"
+    case 403:
+      return "Invalid credential"
+    case 400:
+      return "Wrong request method / Lack of mandatory parameters"
+    case 422:
+      return "Invalid amount of currency"
+    default:
+      return "Unknown Server Error"
+  }
+}
