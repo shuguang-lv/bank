@@ -14,7 +14,7 @@ export const validateEmail = (email: string) => EMAIL_REGX.test(email.trim())
 export const validateName = (username: string) => NAME_REGX.test(username)
 export const validatePassword = (password: string) => PWD_REGX.test(password)
 export const validateBalance = (balance: number) =>
-  NUMBER_REGX.test(balance + "") && balance <= 4294967295.99
+  balance > 0 && balance <= 4294967295.99 && NUMBER_REGX.test(balance + "")
 
 export type StatusCode = 200 | 201 | 401 | 403 | 400 | 422 | 500
 

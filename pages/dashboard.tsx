@@ -27,7 +27,7 @@ function AmountAlert() {
       <strong className="block font-medium text-sm text-red-800">
         {" "}
         The amount should be positive without leading 0 with 2-digit fractional
-        part. The range of it is [0.00, 4294967295.99]{" "}
+        part. The range of it is (0.00, 4294967295.99]{" "}
       </strong>
     </div>
   )
