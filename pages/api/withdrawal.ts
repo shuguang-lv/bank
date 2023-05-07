@@ -38,22 +38,28 @@ export default async function handler(
               },
             },
           })
-          res.status(200).json({ balance: Number(newRecord.BALANCE) });
-          resolve();
-          return;
+          res.status(200).json({ balance: Number(newRecord.BALANCE) })
+          resolve()
+          return
         } catch (err) {
-          if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') {
+          if (
+            err instanceof Prisma.PrismaClientKnownRequestError &&
+            err.code === "P2025"
+          ) {
             // user not found
             res.status(403).end()
-            resolve();
-            return;
-          } else if (err instanceof Prisma.PrismaClientUnknownRequestError && err.message.includes("code: 3819")) {
+            resolve()
+            return
+          } else if (
+            err instanceof Prisma.PrismaClientUnknownRequestError &&
+            err.message.includes("code: 3819")
+          ) {
             // negative balance
             res.status(422).end()
             resolve()
-            return;
+            return
           } else {
-            throw err;
+            throw err
           }
         }
       }

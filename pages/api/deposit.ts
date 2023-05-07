@@ -38,17 +38,20 @@ export default async function handler(
               },
             },
           })
-          res.status(200).json({ balance: Number(newRecord.BALANCE) });
-          resolve();
-          return;
+          res.status(200).json({ balance: Number(newRecord.BALANCE) })
+          resolve()
+          return
         } catch (err) {
-          if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') {
+          if (
+            err instanceof Prisma.PrismaClientKnownRequestError &&
+            err.code === "P2025"
+          ) {
             // user not found
             res.status(403).end()
-            resolve();
-            return;
+            resolve()
+            return
           } else {
-            throw err;
+            throw err
           }
         }
       }
