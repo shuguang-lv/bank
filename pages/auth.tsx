@@ -31,9 +31,35 @@ function LoginCard() {
   >("user-name")
   const { toast } = useToast()
 
+  const isUsernameValid = (value: string) => {
+    return /^[\w-]+$/.test(value)
+  }
+
+  const isPasswordValid = (value: string) => {
+    return /^[\w-]+$/.test(value)
+  }
+
   const login = async () => {
     setLoading(true)
     try {
+      if (!isUsernameValid(username)) {
+        toast({
+          variant: "destructive",
+          title: "Invalid username",
+        })
+        setLoading(false)
+        return
+      }
+
+      if (!isPasswordValid(password)) {
+        toast({
+          variant: "destructive",
+          title: "Invalid password",
+        })
+        setLoading(false)
+        return
+      }
+      
       const res = await fetch("/api/login", {
         method: "POST",
         headers: {
