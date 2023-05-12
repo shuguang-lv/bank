@@ -40,7 +40,7 @@ function DepositCard({
   userToken: string | undefined
   setBalance: (balance: number) => void
 }) {
-  const [amount, setAmount] = useState(0)
+  const [amount, setAmount] = useState("")
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
 
@@ -53,7 +53,7 @@ function DepositCard({
           "Content-Type": "application/json;charset=utf-8",
           Authorization: `Bearer ${userToken}`,
         },
-        body: JSON.stringify({ amount }),
+        body: JSON.stringify({ amount: Number(amount) ?? 0 }),
       })
       if (res.ok) {
         const json = await res.json()
@@ -79,8 +79,9 @@ function DepositCard({
             id="deposit"
             type="number"
             placeholder="Amount"
+            pattern="[0-9]+(\.[0-9]+)?"
             value={amount}
-            onChange={(e) => setAmount(Number(e.target.value))}
+            onChange={(e) => setAmount(e.target.value)}
           />
           <Button
             className="ml-2"
@@ -104,7 +105,7 @@ function WithdrawCard({
   userToken: string | undefined
   setBalance: (balance: number) => void
 }) {
-  const [amount, setAmount] = useState(0)
+  const [amount, setAmount] = useState("")
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
 
@@ -117,7 +118,7 @@ function WithdrawCard({
           "Content-Type": "application/json;charset=utf-8",
           Authorization: `Bearer ${userToken}`,
         },
-        body: JSON.stringify({ amount }),
+        body: JSON.stringify({ amount: Number(amount) ?? 0 }),
       })
       if (res.ok) {
         const json = await res.json()
@@ -143,8 +144,9 @@ function WithdrawCard({
             id="withdraw"
             type="number"
             placeholder="Amount"
+            pattern="[0-9]+(\.[0-9]+)?"
             value={amount}
-            onChange={(e) => setAmount(Number(e.target.value))}
+            onChange={(e) => setAmount(e.target.value)}
           />
           <Button
             className="ml-2"
@@ -217,7 +219,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="w-full h-full flex flex-col items-center">
+    <div className="w-full h-screen flex flex-col items-center">
       <Head>
         <title>Bank - Dashboard</title>
       </Head>
@@ -252,7 +254,7 @@ export default function DashboardPage() {
           </Popover>
         </div>
       </div>
-      <Card className="mt-[150px]">
+      <Card className="mt-[10vh]">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium mt-0">Balance</CardTitle>
           <CreditCard className="h-5 w-5 text-muted-foreground" />
