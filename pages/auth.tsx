@@ -59,7 +59,7 @@ function LoginCard() {
         setLoading(false)
         return
       }
-      
+
       const res = await fetch("/api/login", {
         method: "POST",
         headers: {
@@ -138,7 +138,11 @@ function SignupCard() {
         headers: {
           "Content-Type": "application/json;charset=utf-8",
         },
-        body: JSON.stringify({ username, password, balance: Number(balance) ?? 0 }),
+        body: JSON.stringify({
+          username,
+          password,
+          balance: Number(balance) ?? 0,
+        }),
       })
       if (res.ok) {
         toast({
@@ -228,9 +232,7 @@ function SignupCard() {
             placeholder="Amount"
             pattern="[0-9]+(\.[0-9]+)?"
             value={balance}
-            onChange={(e) =>
-              setBalance(e.target.value)
-            }
+            onChange={(e) => setBalance(e.target.value)}
           />
         </div>
         {!validateBalance(balance) && (

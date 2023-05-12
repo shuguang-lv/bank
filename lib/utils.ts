@@ -14,10 +14,15 @@ export const validateEmail = (email: string) => EMAIL_REGX.test(email.trim())
 export const validateName = (username: string) => NAME_REGX.test(username)
 export const validatePassword = (password: string) => PWD_REGX.test(password)
 export const validateBalance = (balance: number | string) => {
-  const numberForm = typeof balance === 'number' ? balance : (Number(balance) ?? 0)
-  let stringForm = typeof balance === 'string' ? balance : balance + ''
-  stringForm = stringForm.includes('.') ? stringForm : stringForm + '.00'
-  return numberForm > 0 && numberForm <= 4294967295.99 && NUMBER_REGX.test(stringForm)
+  const numberForm =
+    typeof balance === "number" ? balance : Number(balance) ?? 0
+  let stringForm = typeof balance === "string" ? balance : balance + ""
+  stringForm = stringForm.includes(".") ? stringForm : stringForm + ".00"
+  return (
+    numberForm > 0 &&
+    numberForm <= 4294967295.99 &&
+    NUMBER_REGX.test(stringForm)
+  )
 }
 
 export type StatusCode = 200 | 201 | 401 | 403 | 400 | 422 | 500

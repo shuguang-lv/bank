@@ -40,7 +40,7 @@ function DepositCard({
   userToken: string | undefined
   setBalance: (balance: number) => void
 }) {
-  const [amount, setAmount] = useState('')
+  const [amount, setAmount] = useState("")
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
 
@@ -81,9 +81,7 @@ function DepositCard({
             placeholder="Amount"
             pattern="[0-9]+(\.[0-9]+)?"
             value={amount}
-            onChange={(e) =>
-              setAmount(e.target.value)
-            }
+            onChange={(e) => setAmount(e.target.value)}
           />
           <Button
             className="ml-2"
@@ -107,7 +105,7 @@ function WithdrawCard({
   userToken: string | undefined
   setBalance: (balance: number) => void
 }) {
-  const [amount, setAmount] = useState('')
+  const [amount, setAmount] = useState("")
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
 
@@ -143,14 +141,12 @@ function WithdrawCard({
       <CardContent className="w-full max-w-sm space-x-2">
         <div className="flex justify-between mb-4">
           <Input
-            id="withdraw" 
+            id="withdraw"
             type="number"
             placeholder="Amount"
             pattern="[0-9]+(\.[0-9]+)?"
             value={amount}
-            onChange={(e) =>
-              setAmount(e.target.value)
-            }
+            onChange={(e) => setAmount(e.target.value)}
           />
           <Button
             className="ml-2"
