@@ -31,10 +31,18 @@ function LoginCard() {
   >("user-name")
   const { toast } = useToast()
 
+  const isUsernameValid = (value: string) => {
+    return /^[\w-]+$/.test(value)
+  }
+
+  const isPasswordValid = (value: string) => {
+    return /^[\w-]+$/.test(value)
+  }
+
   const login = async () => {
     setLoading(true)
     try {
-      if (!validateName(username)) {
+      if (!isUsernameValid(username)) {
         toast({
           variant: "destructive",
           title: "Invalid username",
@@ -43,7 +51,7 @@ function LoginCard() {
         return
       }
 
-      if (!validatePassword(password)) {
+      if (!isPasswordValid(password)) {
         toast({
           variant: "destructive",
           title: "Invalid password",
@@ -112,7 +120,7 @@ function SignupCard() {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [password2, setPassword2] = useState("")
-  const [balance, setBalance] = useState(0)
+  const [balance, setBalance] = useState("")
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
 
@@ -130,7 +138,7 @@ function SignupCard() {
         headers: {
           "Content-Type": "application/json;charset=utf-8",
         },
-        body: JSON.stringify({ username, password, balance }),
+        body: JSON.stringify({ username, password, balance: Number(balance) ?? 0 }),
       })
       if (res.ok) {
         toast({
@@ -218,8 +226,11 @@ function SignupCard() {
             id="balance"
             type="number"
             placeholder="Amount"
-            value={balance === 0 ? "" : balance.toString().replace(/^0+/, "")}
-            onChange={(e) => setBalance(Number(e.target.value))}
+            pattern="[0-9]+(\.[0-9]+)?"
+            value={balance}
+            onChange={(e) =>
+              setBalance(e.target.value)
+            }
           />
         </div>
         {!validateBalance(balance) && (
@@ -257,7 +268,7 @@ export default function AuthPage() {
   }, [userToken])
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center mt-8 mb-[20vh]">
       <Head>
         <title>Bank - Authentication</title>
       </Head>

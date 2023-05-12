@@ -14,11 +14,11 @@ const nunito = Nunito_Sans({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <main
-      className={`${nunito.className} ${nunito.variable} flex h-screen w-screen flex-col items-center justify-center font-sans text-slate-900 antialiased pb-[100px]`}
+      className={`${nunito.className} ${nunito.variable} flex min-h-screen w-screen flex-col items-center justify-center font-sans overflow-auto text-slate-900 antialiased`}
     >
       <Component {...pageProps} />
       <Toaster />
-      <div className="w-full fixed bottom-0 p-8">
+      <div className="w-full fixed bottom-0 p-4 bg-white">
         <Separator className="mb-4" />
         <div className="flex justify-between p-2">
           <p className="text-sm text-muted-foreground">
