@@ -79,7 +79,7 @@ function DepositCard({
             id="deposit"
             type="number"
             placeholder="Amount"
-            value={amount}
+            value={amount === 0 ? "" : amount.toString().replace(/^0+/, "")}
             onChange={(e) => setAmount(Number(e.target.value))}
           />
           <Button
@@ -143,7 +143,7 @@ function WithdrawCard({
             id="withdraw"
             type="number"
             placeholder="Amount"
-            value={amount}
+            value={amount === 0 ? "" : amount.toString().replace(/^0+/, "")}
             onChange={(e) => setAmount(Number(e.target.value))}
           />
           <Button

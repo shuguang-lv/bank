@@ -31,18 +31,10 @@ function LoginCard() {
   >("user-name")
   const { toast } = useToast()
 
-  const isUsernameValid = (value: string) => {
-    return /^[\w-]+$/.test(value)
-  }
-
-  const isPasswordValid = (value: string) => {
-    return /^[\w-]+$/.test(value)
-  }
-
   const login = async () => {
     setLoading(true)
     try {
-      if (!isUsernameValid(username)) {
+      if (!validateName(username)) {
         toast({
           variant: "destructive",
           title: "Invalid username",
@@ -51,7 +43,7 @@ function LoginCard() {
         return
       }
 
-      if (!isPasswordValid(password)) {
+      if (!validatePassword(password)) {
         toast({
           variant: "destructive",
           title: "Invalid password",
@@ -225,7 +217,8 @@ function SignupCard() {
           <Input
             id="balance"
             type="number"
-            value={balance}
+            placeholder="Amount"
+            value={balance === 0 ? "" : balance.toString().replace(/^0+/, "")}
             onChange={(e) => setBalance(Number(e.target.value))}
           />
         </div>
