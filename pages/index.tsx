@@ -19,10 +19,9 @@ export default function DefaultPage() {
   useEffect(() => {
     if (userToken && target) {
       router.push(target as string)
-    }else if (!userToken) {
+    } else if (!userToken) {
       router.push(`/auth${target ? `?target=${target}` : ""}`)
-    } 
-    else {
+    } else {
       router.push("/dashboard")
     }
   }, [userToken, target])
