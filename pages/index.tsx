@@ -7,15 +7,7 @@ export default function DefaultPage() {
   const router = useRouter()
   const [userToken, _] = useLocalStorageState<string | undefined>("user-token")
   const { target } = router.query
-
-  // useEffect(() => {
-  //   if (!userToken) {
-  //     router.push("/auth")
-  //   } else {
-  //     router.push("/dashboard")
-  //   }
-  // }, [userToken])
-
+  
   useEffect(() => {
     if (userToken && target) {
       router.push(target as string)
