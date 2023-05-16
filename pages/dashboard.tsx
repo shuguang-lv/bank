@@ -36,9 +36,11 @@ function AmountAlert() {
 function DepositCard({
   userToken,
   setBalance,
+  username
 }: {
   userToken: string | undefined
   setBalance: (balance: number) => void
+  username: string | undefined
 }) {
   const [amount, setAmount] = useState("")
   const [loading, setLoading] = useState(false)
@@ -53,7 +55,7 @@ function DepositCard({
           "Content-Type": "application/json;charset=utf-8",
           Authorization: `Bearer ${userToken}`,
         },
-        body: JSON.stringify({ amount: Number(amount) ?? 0 }),
+        body: JSON.stringify({ amount: Number(amount) ?? 0, username }),
       })
       if (res.ok) {
         const json = await res.json()
@@ -101,11 +103,11 @@ function DepositCard({
 function WithdrawCard({
   userToken,
   setBalance,
-  userNameLocal
+  username
 }: {
   userToken: string | undefined
   setBalance: (balance: number) => void
-  userNameLocal: string | undefined
+  username: string | undefined
 }) {
   const [amount, setAmount] = useState("")
   const [loading, setLoading] = useState(false)
@@ -120,7 +122,7 @@ function WithdrawCard({
           "Content-Type": "application/json;charset=utf-8",
           Authorization: `Bearer ${userToken}`,
         },
-        body: JSON.stringify({ amount: Number(amount) ?? 0, userName: userNameLocal ?? "", }),
+        body: JSON.stringify({ amount: Number(amount) ?? 0, username, }),
       })
       if (res.ok) {
         const json = await res.json()
@@ -274,10 +276,10 @@ export default function DashboardPage() {
               <TabsTrigger value="withdraw">Withdraw</TabsTrigger>
             </TabsList>
             <TabsContent value="deposit">
-              <DepositCard userToken={userToken} setBalance={setBalance} />
+              <DepositCard userToken={userToken} setBalance={setBalance} username={username}/>
             </TabsContent>
             <TabsContent value="withdraw">
-              <WithdrawCard userToken={userToken} setBalance={setBalance} userNameLocal={userNameLocal}/>
+              <WithdrawCard userToken={userToken} setBalance={setBalance} username={username}/>
             </TabsContent>
           </Tabs>
         </CardContent>
