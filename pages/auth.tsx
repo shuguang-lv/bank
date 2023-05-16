@@ -31,18 +31,10 @@ function LoginCard() {
   >("user-name")
   const { toast } = useToast()
 
-  const isUsernameValid = (value: string) => {
-    return /^[\w-]+$/.test(value)
-  }
-
-  const isPasswordValid = (value: string) => {
-    return /^[\w-]+$/.test(value)
-  }
-
   const login = async () => {
     setLoading(true)
     try {
-      if (!isUsernameValid(username)) {
+      if (!validateName(username)) {
         toast({
           variant: "destructive",
           title: "Invalid username",
@@ -51,7 +43,7 @@ function LoginCard() {
         return
       }
 
-      if (!isPasswordValid(password)) {
+      if (!validatePassword(password)) {
         toast({
           variant: "destructive",
           title: "Invalid password",
@@ -119,7 +111,7 @@ function LoginCard() {
 function SignupCard() {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-  const [password2, setPassword2] = useState("")
+  const [passwordConfirm, setPasswordConfirm] = useState("")
   const [balance, setBalance] = useState("")
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
@@ -127,7 +119,7 @@ function SignupCard() {
   const validateFields = () =>
     validateName(username) &&
     validatePassword(password) &&
-    password === password2 &&
+    password === passwordConfirm &&
     validateBalance(balance)
 
   const signup = async () => {
@@ -209,11 +201,11 @@ function SignupCard() {
           <Input
             id="password-confirmation"
             type="password"
-            value={password2}
-            onChange={(e) => setPassword2(e.target.value)}
+            value={passwordConfirm}
+            onChange={(e) => setPasswordConfirm(e.target.value)}
           />
         </div>
-        {password !== password2 && (
+        {password !== passwordConfirm && (
           <div
             role="alert"
             className="rounded border-s-4 border-red-500 bg-red-50 p-2"

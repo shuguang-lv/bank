@@ -26,7 +26,7 @@ export default function App({ Component, pageProps }: AppProps) {
           </p>
           <a
             href="https://github.com/shuguang-lv/bank"
-            rel="noreferrer"
+            rel="noreferrer noopener"
             target="_blank"
             className="text-gray-700 transition hover:opacity-75"
           >
