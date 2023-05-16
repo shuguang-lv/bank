@@ -50,9 +50,9 @@ export default async function handler(
       resolve()
       return
     }
-    let salt = new Buffer(await bcrypt.genSalt(10))
-    let hash = await argon2.hash(req.body.password, { salt })
-    let balance = req.body.balance ? req.body.balance : 0
+    const salt = new Buffer(await bcrypt.genSalt(10))
+    const hash = await argon2.hash(req.body.password, { salt })
+    const balance = req.body.balance ?? 0
     await prisma.bANK_USERS.create({
       data: {
         USER_NAME: req.body.username,
@@ -60,8 +60,7 @@ export default async function handler(
         BALANCE: balance,
       },
     })
-    let token = jwt.sign({ username: req.body.username }, { expiresIn: "1h" })
-
+    const token = jwt.sign({ username: req.body.username }, { expiresIn: "1h" })
     res.status(200).json({ username: req.body.username, token: token })
     resolve()
   })

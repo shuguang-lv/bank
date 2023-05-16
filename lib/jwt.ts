@@ -8,8 +8,8 @@ declare global {
 
 const jwt = {
   sign: (payload: any, options: any) => {
-    let secret = process.env.JWT_SECRET
-    let token = jsonwebtoken.sign(payload, secret, options)
+    const secret = process.env.JWT_SECRET
+    const token = jsonwebtoken.sign(payload, secret, options)
     console.log(token)
     return token
   },
@@ -19,9 +19,9 @@ const jwt = {
     callback: Function
   ) => {
     // callback(req, res, decoded);
-    let secret = process.env.JWT_SECRET
-    let token = req.headers.authorization?.split(" ")[1]
-    if (typeof token != "string") {
+    const secret = process.env.JWT_SECRET
+    const token = req.headers.authorization?.split(" ")[1]
+    if (typeof token !== "string") {
       res.status(401).end()
       return
     }
