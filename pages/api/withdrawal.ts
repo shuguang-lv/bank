@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { Prisma } from "@prisma/client"
-import * as bcrypt from "bcrypt"
 
 import jwt from "@/lib/jwt"
 import prisma from "@/lib/prisma"

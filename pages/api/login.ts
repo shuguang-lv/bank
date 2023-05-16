@@ -41,7 +41,7 @@ export default async function handler(
     }
     argon2.verify(exists.PWD_HASH, req.body.password).then((result) => {
       if (result) {
-        let token = jwt.sign({ username: username }, { expiresIn: "1h" })
+        const token = jwt.sign({ username: username }, { expiresIn: "1h" })
         res.status(200).json({ username: username, token: token })
         resolve()
       } else {

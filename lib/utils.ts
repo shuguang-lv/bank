@@ -17,6 +17,7 @@ export const validateBalance = (balance: number | string) => {
   const numberForm =
     typeof balance === "number" ? balance : Number(balance) ?? 0
   let stringForm = typeof balance === "string" ? balance : balance + ""
+  // complement of fractional part
   stringForm = stringForm.includes(".") ? stringForm : stringForm + ".00"
   return (
     numberForm > 0 &&
