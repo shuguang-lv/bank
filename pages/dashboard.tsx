@@ -101,9 +101,11 @@ function DepositCard({
 function WithdrawCard({
   userToken,
   setBalance,
+  userNameLocal
 }: {
   userToken: string | undefined
   setBalance: (balance: number) => void
+  userNameLocal: string | undefined
 }) {
   const [amount, setAmount] = useState("")
   const [loading, setLoading] = useState(false)
@@ -118,7 +120,7 @@ function WithdrawCard({
           "Content-Type": "application/json;charset=utf-8",
           Authorization: `Bearer ${userToken}`,
         },
-        body: JSON.stringify({ amount: Number(amount) ?? 0 }),
+        body: JSON.stringify({ amount: Number(amount) ?? 0, userName: userNameLocal ?? "", }),
       })
       if (res.ok) {
         const json = await res.json()
@@ -275,7 +277,7 @@ export default function DashboardPage() {
               <DepositCard userToken={userToken} setBalance={setBalance} />
             </TabsContent>
             <TabsContent value="withdraw">
-              <WithdrawCard userToken={userToken} setBalance={setBalance} />
+              <WithdrawCard userToken={userToken} setBalance={setBalance} userNameLocal={userNameLocal}/>
             </TabsContent>
           </Tabs>
         </CardContent>
