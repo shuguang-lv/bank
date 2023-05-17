@@ -19,16 +19,17 @@ export default async function handler(
       req,
       res,
       async (req: NextApiRequest, res: NextApiResponse, decoded: any) => {
-        if (amount == null) {
+        if (amount == null || username == null) {
           res.status(400).end()
           resolve()
           return
         }
-        if (!validateBalance(amount)) {
-          res.status(422).end()
-          resolve()
-          return
-        }
+        // Input validation vulnerability
+        // if (!validateBalance(amount)) {
+        //   res.status(422).end()
+        //   resolve()
+        //   return
+        // }
         try {
           const newRecord = await prisma.bANK_USERS.update({
             where: { USER_NAME: username },
