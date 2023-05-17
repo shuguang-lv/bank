@@ -1,6 +1,6 @@
 # Bank
 
-This is a course project for the course SWE 266P of UCI MSWE in spring 2023. It implements a self-contained web app for online banking. The app is built with Next.js, TypeScript, and Tailwind CSS. It uses MySQL as the database (Prisma as the ORM) and is deployed on Vercel.
+This is a course project for the course SWE 266P of UCI MSWE in spring 2023. It implements a self-contained web app for online banking. The app is built with Next.js (React.js framework), TypeScript, and Tailwind CSS. It uses MySQL as the database (Prisma as the ORM), deployed on Vercel.
 
 ## System Requirements
 
@@ -23,3 +23,18 @@ This is a course project for the course SWE 266P of UCI MSWE in spring 2023. It 
 ## Useful Commands
 
 - `npm run prisma:studio`: Open the Prisma Studio to view and edit the database.
+
+## Folder Structure
+
+- `components/`: React components
+- `lib/`: Utility functions
+- `hooks/`: React hooks
+- `pages/`: Next.js pages
+  - `api/`: API routes (serverless functions for backend)
+  - `*.tsx`: React pages
+- `prisma/`: Prisma schema and migrations
+- `public/`: Static files
+- `styles/`: Tailwind CSS styles
+- `next.config.js`: Next.js configuration
+- `.env`: Environment variables
+- `.env.local`: Local environment variables (not committed)
