@@ -60,7 +60,10 @@ export default async function handler(
             resolve()
             return
           } else {
+            res.status(500).end()
+            resolve()
             console.log(err);
+            return;
           }
         }
       }
