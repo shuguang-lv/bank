@@ -31,10 +31,6 @@ export default async function handler(
       !validatePassword(req.body.password) ||
       !validateBalance(req.body.balance)
     ) {
-      console.log("invalid")
-      console.log(validateName(req.body.username))
-      console.log(validatePassword(req.body.password))
-      console.log(validateBalance(req.body.balance))
       res.status(422).end()
       resolve()
       return

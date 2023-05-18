@@ -37,7 +37,7 @@ export const handleErrorMsg = (statusCode: StatusCode) => {
     case 400:
       return "Wrong request method / Lack of mandatory parameters"
     case 422:
-      return "Invalid amount of currency"
+      return "Invalid amount for transaction"
     default:
       return "Unknown Server Error"
   }
