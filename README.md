@@ -1,6 +1,6 @@
 # Bank
 
-This is a course project for the course SWE 266P of UCI MSWE in spring 2023. It implements a self-contained web app for online banking. The app is built with Next.js (React.js framework), TypeScript, and Tailwind CSS. It uses MySQL as the database (Prisma as the ORM), deployed on Vercel.
+This is a course project for the course SWE 266P of UCI MSWE in spring 2023. It implements a self-contained web app for online banking. The app is built with Next.js (React.js framework), TypeScript, and Tailwind CSS. It uses MySQL as the database (Prisma as the ORM), deployed on Vercel. An insecure version which you can evaluate is in the branch `insecure`.
 
 ## System Requirements
 
