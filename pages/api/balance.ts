@@ -17,19 +17,24 @@ export default async function handler(
       req,
       res,
       async (req: NextApiRequest, res: NextApiResponse, decoded: any) => {
-        const exists = await prisma.bANK_USERS.findFirst({
-          where: {
-            USER_NAME: decoded.username,
-          },
-        })
-        if (!exists) {
-          res.status(403).end()
+        try {
+          const exists = await prisma.bANK_USERS.findFirst({
+            where: {
+              USER_NAME: decoded.username,
+            },
+          })
+          if (!exists) {
+            res.status(403).end()
+            resolve()
+          } else {
+            res.status(200).json({ balance: exists.BALANCE })
+            resolve()
+          }
           resolve()
-        } else {
-          res.status(200).json({ balance: exists.BALANCE })
+        } catch (error) {
+          res.status(500).end()
           resolve()
         }
-        resolve()
       }
     )
   })

@@ -10,7 +10,6 @@ const jwt = {
   sign: (payload: any, options: any) => {
     const secret = process.env.JWT_SECRET
     const token = jsonwebtoken.sign(payload, secret, options)
-    console.log(token)
     return token
   },
   authenticate: (

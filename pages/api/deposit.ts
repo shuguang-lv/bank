@@ -50,7 +50,9 @@ export default async function handler(
             resolve()
             return
           } else {
-            throw err
+            res.status(500).end()
+            resolve()
+            return
           }
         }
       }
