@@ -15,7 +15,7 @@ export default function rateLimit(options?: Options) {
   return {
     check: (res: NextApiResponse, limit: number, token: string) =>
       new Promise<void>((resolve, reject) => {
-        // as an array so that it is passed by reference 
+        // as an array so that it is passed by reference
         // then we can change the token count stored in the cache
         const tokenCount = (tokenCache.get(token) as number[]) || [0]
         if (tokenCount[0] === 0) {

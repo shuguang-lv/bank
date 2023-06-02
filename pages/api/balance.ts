@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 import { Prisma } from "@prisma/client"
+import requestIp from "request-ip"
 
 import jwt from "@/lib/jwt"
 import prisma from "@/lib/prisma"
 import rateLimit from "@/lib/rate-limiter"
-import requestIp from "request-ip"
 
 type Data = {
   balance: Prisma.Decimal
@@ -19,39 +19,32 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  return new Promise<void>(async (resolve, reject) => {
-    try{
-      const identifier = requestIp.getClientIp(req) as string
-      await limiter.check(res, 10, identifier)
-    }catch(err){
-      res.status(429).end()
-      resolve()
-      return
-    }
-    
-    jwt.authenticate(
-      req,
-      res,
-      async (req: NextApiRequest, res: NextApiResponse, decoded: any) => {
-        try {
-          const exists = await prisma.bANK_USERS.findFirst({
-            where: {
-              USER_NAME: decoded.username,
-            },
-          })
-          if (!exists) {
-            res.status(403).end()
-            resolve()
-          } else {
-            res.status(200).json({ balance: exists.BALANCE })
-            resolve()
-          }
-          resolve()
-        } catch (error) {
-          res.status(500).end()
-          resolve()
+  try {
+    const identifier = requestIp.getClientIp(req) as string
+    await limiter.check(res, 10, identifier)
+  } catch (err) {
+    res.status(429).end()
+    return
+  }
+
+  jwt.authenticate(
+    req,
+    res,
+    async (req: NextApiRequest, res: NextApiResponse, decoded: any) => {
+      try {
+        const exists = await prisma.bANK_USERS.findFirst({
+          where: {
+            USER_NAME: decoded.username,
+          },
+        })
+        if (!exists) {
+          res.status(403).end()
+        } else {
+          res.status(200).json({ balance: exists.BALANCE })
         }
+      } catch (error) {
+        res.status(500).end()
       }
-    )
-  })
+    }
+  )
 }
