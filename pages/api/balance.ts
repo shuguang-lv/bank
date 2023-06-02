@@ -4,6 +4,7 @@ import { Prisma } from "@prisma/client"
 import jwt from "@/lib/jwt"
 import prisma from "@/lib/prisma"
 import rateLimit from "@/lib/rate-limiter"
+import requestIp from "request-ip"
 
 type Data = {
   balance: Prisma.Decimal
@@ -20,7 +21,8 @@ export default async function handler(
 ) {
   return new Promise<void>(async (resolve, reject) => {
     try{
-      await limiter.check(res, 10, req.body.username)
+      const identifier = requestIp.getClientIp(req) as string
+      await limiter.check(res, 10, identifier)
     }catch(err){
       res.status(429).end()
       resolve()

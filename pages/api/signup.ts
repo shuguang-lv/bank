@@ -5,11 +5,18 @@ import * as bcrypt from "bcrypt"
 import jwt from "@/lib/jwt"
 import prisma from "@/lib/prisma"
 import { validateBalance, validateName, validatePassword } from "@/lib/utils"
+import requestIp from "request-ip";
+import rateLimit from "@/lib/rate-limiter"
 
 type Data = {
   username: string
   token: string
 }
+
+const limiter = rateLimit({
+  interval: 60 * 1000, // 60 seconds
+  uniqueTokenPerInterval: 500, // Max 500 users per second
+})
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,6 +24,9 @@ export default async function handler(
 ) {
   return new Promise<void>(async (resolve, reject) => {
     try{
+      // maximum 10 requests per user every 60 seconds
+      const identifier = requestIp.getClientIp(req) as string
+      await limiter.check(res, 10, identifier)
       if (
         req.method !== "POST" ||
         !req.body.username ||

@@ -5,6 +5,7 @@ import jwt from "@/lib/jwt"
 import prisma from "@/lib/prisma"
 import rateLimit from "@/lib/rate-limiter"
 import { validateName, validatePassword } from "@/lib/utils"
+import requestIp from "request-ip";
 
 type Data = {
   username: string
@@ -23,7 +24,8 @@ export default async function handler(
   return new Promise<void>(async (resolve, reject) => {
     try {
       // maximum 10 requests per user every 60 seconds
-      await limiter.check(res, 10, req.body.username)
+      const identifier = requestIp.getClientIp(req) as string
+      await limiter.check(res, 10, identifier)
       if (req.method !== "POST" || !req.body.username || !req.body.password) {
         res.status(400).end()
         resolve()
