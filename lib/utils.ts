@@ -26,7 +26,7 @@ export const validateBalance = (balance: number | string) => {
   )
 }
 
-export type StatusCode = 200 | 201 | 401 | 403 | 400 | 422 | 500
+export type StatusCode = 200 | 201 | 401 | 403 | 400 | 422 | 429 | 500
 
 export const handleErrorMsg = (statusCode: StatusCode) => {
   switch (statusCode) {
@@ -38,6 +38,8 @@ export const handleErrorMsg = (statusCode: StatusCode) => {
       return "Wrong request method / Lack of mandatory parameters"
     case 422:
       return "Invalid amount of currency"
+    case 429:
+      return "Too many requests"
     default:
       return "Unknown Server Error"
   }
