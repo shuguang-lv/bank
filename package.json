@@ -30,6 +30,7 @@
     "lru-cache": "^7.10.10",
     "lucide-react": "^0.181.0",
     "next": "13.3.0",
+    "next-csrf": "^0.2.1",
     "postcss": "8.4.23",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -42,16 +43,16 @@
     "@ianvs/prettier-plugin-sort-imports": "^3.7.2",
     "@types/argon2": "0.15.0",
     "@types/bcrypt": "5.0.0",
+    "@types/bcryptjs": "2.4.2",
     "@types/node": "18.15.13",
     "@types/react": "18.0.37",
     "@types/react-dom": "18.0.11",
     "@types/request-ip": "^0.0.37",
-    "@types/bcryptjs": "2.4.2",
     "cross-env": "^7.0.3",
-    "prisma": "4.13.0",
-    "eslint-config-prettier": "^8.8.0",
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",
+    "eslint-config-prettier": "^8.8.0",
+    "prisma": "4.13.0",
     "typescript": "5.0.4"
   }
 }
