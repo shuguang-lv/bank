@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/ui/use-toast"
 import { useLocalStorageState } from "ahooks"
 import { CreditCard, Landmark, Loader2, LogOut } from "lucide-react"
 
+import { setup } from "@/lib/csrf"
 import { StatusCode, handleErrorMsg, validateBalance } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -162,6 +163,10 @@ function WithdrawCard({
     </Card>
   )
 }
+
+export const getServerSideProps = setup(async (req, res) => {
+  return { props: {} }
+})
 
 export default function DashboardPage() {
   const router = useRouter()

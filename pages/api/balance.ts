@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next"
 import { Prisma } from "@prisma/client"
 import requestIp from "request-ip"
 
+import { csrf } from "@/lib/csrf"
 import jwt from "@/lib/jwt"
 import prisma from "@/lib/prisma"
 import rateLimit from "@/lib/rate-limiter"
@@ -15,10 +16,7 @@ const limiter = rateLimit({
   uniqueTokenPerInterval: 500, // Max 500 users per second
 })
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Data>
-) {
+const handler = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   try {
     const identifier = requestIp.getClientIp(req) as string
     await limiter.check(res, 10, identifier)
@@ -48,3 +46,5 @@ export default async function handler(
     }
   )
 }
+
+export default csrf(handler)
