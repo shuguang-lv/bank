@@ -15,27 +15,26 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   return new Promise<void>(async (resolve, reject) => {
-    const { username, amount } = req.body;
     jwt.authenticate(
       req,
       res,
       async (req: NextApiRequest, res: NextApiResponse, decoded: any) => {
-        if (amount == null) {
+        if (req.body.amount == null) {
           res.status(400).end()
           resolve()
           return
         }
-        if (!validateBalance(amount)) {
+        if (!validateBalance(req.body.amount)) {
           res.status(422).end()
           resolve()
           return
         }
         try {
           const newRecord = await prisma.bANK_USERS.update({
-            where: { USER_NAME: username },
+            where: { USER_NAME: decoded.username },
             data: {
               BALANCE: {
-                increment: Number(amount),
+                increment: Number(req.body.amount),
               },
             },
           })
